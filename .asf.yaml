@@ -17,7 +17,7 @@
 
 # NOTE: All configurations could be found here: https://cwiki.apache.org/confluence/display/INFRA/Git+-+.asf.yaml+features
 github:
-  description: "Apache OpenDAL: Access data freely, painlessly, and efficiently."
+  description: "Apache OpenDAL: access data freely."
   homepage: https://opendal.apache.org
   labels:
     - rust
@@ -34,6 +34,8 @@ github:
     main:
       required_pull_request_reviews:
         required_approving_review_count: 1
+    gh-pages:
+      whatever: Just a placeholder to make it take effects
 
 notifications:
   commits:      commits@opendal.apache.org

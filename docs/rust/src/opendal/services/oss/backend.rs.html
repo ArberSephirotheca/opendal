@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/oss/backend.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-1f7d512b176f0f72.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-124a1ca42af929b6.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-93196c7a1c3542a8.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../../../static.files/light-4743e13df3dfe8c4.css"><link rel="stylesheet" disabled href="../../../../static.files/dark-0e1b889528bd466b.css"><link rel="stylesheet" disabled href="../../../../static.files/ayu-65289d5d067c7c66.css"><script id="default-settings" ></script><script src="../../../../static.files/storage-d43fa987303ecbbb.js"></script><script defer src="../../../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../static.files/main-3367e395607fafc1.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-5ec35bf9ca753509.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/oss/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0 (90c541806 2023-05-31)" data-search-js="search-e077946657036a58.js" data-settings-js="settings-298e1ea74db45b39.js" data-settings-css="settings-7bfb4c59cc6bc502.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../../../static.files/source-script-905937fbbdc8e9ea.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../static.files/main-f61008743c98d196.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -696,226 +696,7 @@
 <a href="#696" id="696">696</a>
 <a href="#697" id="697">697</a>
 <a href="#698" id="698">698</a>
-<a href="#699" id="699">699</a>
-<a href="#700" id="700">700</a>
-<a href="#701" id="701">701</a>
-<a href="#702" id="702">702</a>
-<a href="#703" id="703">703</a>
-<a href="#704" id="704">704</a>
-<a href="#705" id="705">705</a>
-<a href="#706" id="706">706</a>
-<a href="#707" id="707">707</a>
-<a href="#708" id="708">708</a>
-<a href="#709" id="709">709</a>
-<a href="#710" id="710">710</a>
-<a href="#711" id="711">711</a>
-<a href="#712" id="712">712</a>
-<a href="#713" id="713">713</a>
-<a href="#714" id="714">714</a>
-<a href="#715" id="715">715</a>
-<a href="#716" id="716">716</a>
-<a href="#717" id="717">717</a>
-<a href="#718" id="718">718</a>
-<a href="#719" id="719">719</a>
-<a href="#720" id="720">720</a>
-<a href="#721" id="721">721</a>
-<a href="#722" id="722">722</a>
-<a href="#723" id="723">723</a>
-<a href="#724" id="724">724</a>
-<a href="#725" id="725">725</a>
-<a href="#726" id="726">726</a>
-<a href="#727" id="727">727</a>
-<a href="#728" id="728">728</a>
-<a href="#729" id="729">729</a>
-<a href="#730" id="730">730</a>
-<a href="#731" id="731">731</a>
-<a href="#732" id="732">732</a>
-<a href="#733" id="733">733</a>
-<a href="#734" id="734">734</a>
-<a href="#735" id="735">735</a>
-<a href="#736" id="736">736</a>
-<a href="#737" id="737">737</a>
-<a href="#738" id="738">738</a>
-<a href="#739" id="739">739</a>
-<a href="#740" id="740">740</a>
-<a href="#741" id="741">741</a>
-<a href="#742" id="742">742</a>
-<a href="#743" id="743">743</a>
-<a href="#744" id="744">744</a>
-<a href="#745" id="745">745</a>
-<a href="#746" id="746">746</a>
-<a href="#747" id="747">747</a>
-<a href="#748" id="748">748</a>
-<a href="#749" id="749">749</a>
-<a href="#750" id="750">750</a>
-<a href="#751" id="751">751</a>
-<a href="#752" id="752">752</a>
-<a href="#753" id="753">753</a>
-<a href="#754" id="754">754</a>
-<a href="#755" id="755">755</a>
-<a href="#756" id="756">756</a>
-<a href="#757" id="757">757</a>
-<a href="#758" id="758">758</a>
-<a href="#759" id="759">759</a>
-<a href="#760" id="760">760</a>
-<a href="#761" id="761">761</a>
-<a href="#762" id="762">762</a>
-<a href="#763" id="763">763</a>
-<a href="#764" id="764">764</a>
-<a href="#765" id="765">765</a>
-<a href="#766" id="766">766</a>
-<a href="#767" id="767">767</a>
-<a href="#768" id="768">768</a>
-<a href="#769" id="769">769</a>
-<a href="#770" id="770">770</a>
-<a href="#771" id="771">771</a>
-<a href="#772" id="772">772</a>
-<a href="#773" id="773">773</a>
-<a href="#774" id="774">774</a>
-<a href="#775" id="775">775</a>
-<a href="#776" id="776">776</a>
-<a href="#777" id="777">777</a>
-<a href="#778" id="778">778</a>
-<a href="#779" id="779">779</a>
-<a href="#780" id="780">780</a>
-<a href="#781" id="781">781</a>
-<a href="#782" id="782">782</a>
-<a href="#783" id="783">783</a>
-<a href="#784" id="784">784</a>
-<a href="#785" id="785">785</a>
-<a href="#786" id="786">786</a>
-<a href="#787" id="787">787</a>
-<a href="#788" id="788">788</a>
-<a href="#789" id="789">789</a>
-<a href="#790" id="790">790</a>
-<a href="#791" id="791">791</a>
-<a href="#792" id="792">792</a>
-<a href="#793" id="793">793</a>
-<a href="#794" id="794">794</a>
-<a href="#795" id="795">795</a>
-<a href="#796" id="796">796</a>
-<a href="#797" id="797">797</a>
-<a href="#798" id="798">798</a>
-<a href="#799" id="799">799</a>
-<a href="#800" id="800">800</a>
-<a href="#801" id="801">801</a>
-<a href="#802" id="802">802</a>
-<a href="#803" id="803">803</a>
-<a href="#804" id="804">804</a>
-<a href="#805" id="805">805</a>
-<a href="#806" id="806">806</a>
-<a href="#807" id="807">807</a>
-<a href="#808" id="808">808</a>
-<a href="#809" id="809">809</a>
-<a href="#810" id="810">810</a>
-<a href="#811" id="811">811</a>
-<a href="#812" id="812">812</a>
-<a href="#813" id="813">813</a>
-<a href="#814" id="814">814</a>
-<a href="#815" id="815">815</a>
-<a href="#816" id="816">816</a>
-<a href="#817" id="817">817</a>
-<a href="#818" id="818">818</a>
-<a href="#819" id="819">819</a>
-<a href="#820" id="820">820</a>
-<a href="#821" id="821">821</a>
-<a href="#822" id="822">822</a>
-<a href="#823" id="823">823</a>
-<a href="#824" id="824">824</a>
-<a href="#825" id="825">825</a>
-<a href="#826" id="826">826</a>
-<a href="#827" id="827">827</a>
-<a href="#828" id="828">828</a>
-<a href="#829" id="829">829</a>
-<a href="#830" id="830">830</a>
-<a href="#831" id="831">831</a>
-<a href="#832" id="832">832</a>
-<a href="#833" id="833">833</a>
-<a href="#834" id="834">834</a>
-<a href="#835" id="835">835</a>
-<a href="#836" id="836">836</a>
-<a href="#837" id="837">837</a>
-<a href="#838" id="838">838</a>
-<a href="#839" id="839">839</a>
-<a href="#840" id="840">840</a>
-<a href="#841" id="841">841</a>
-<a href="#842" id="842">842</a>
-<a href="#843" id="843">843</a>
-<a href="#844" id="844">844</a>
-<a href="#845" id="845">845</a>
-<a href="#846" id="846">846</a>
-<a href="#847" id="847">847</a>
-<a href="#848" id="848">848</a>
-<a href="#849" id="849">849</a>
-<a href="#850" id="850">850</a>
-<a href="#851" id="851">851</a>
-<a href="#852" id="852">852</a>
-<a href="#853" id="853">853</a>
-<a href="#854" id="854">854</a>
-<a href="#855" id="855">855</a>
-<a href="#856" id="856">856</a>
-<a href="#857" id="857">857</a>
-<a href="#858" id="858">858</a>
-<a href="#859" id="859">859</a>
-<a href="#860" id="860">860</a>
-<a href="#861" id="861">861</a>
-<a href="#862" id="862">862</a>
-<a href="#863" id="863">863</a>
-<a href="#864" id="864">864</a>
-<a href="#865" id="865">865</a>
-<a href="#866" id="866">866</a>
-<a href="#867" id="867">867</a>
-<a href="#868" id="868">868</a>
-<a href="#869" id="869">869</a>
-<a href="#870" id="870">870</a>
-<a href="#871" id="871">871</a>
-<a href="#872" id="872">872</a>
-<a href="#873" id="873">873</a>
-<a href="#874" id="874">874</a>
-<a href="#875" id="875">875</a>
-<a href="#876" id="876">876</a>
-<a href="#877" id="877">877</a>
-<a href="#878" id="878">878</a>
-<a href="#879" id="879">879</a>
-<a href="#880" id="880">880</a>
-<a href="#881" id="881">881</a>
-<a href="#882" id="882">882</a>
-<a href="#883" id="883">883</a>
-<a href="#884" id="884">884</a>
-<a href="#885" id="885">885</a>
-<a href="#886" id="886">886</a>
-<a href="#887" id="887">887</a>
-<a href="#888" id="888">888</a>
-<a href="#889" id="889">889</a>
-<a href="#890" id="890">890</a>
-<a href="#891" id="891">891</a>
-<a href="#892" id="892">892</a>
-<a href="#893" id="893">893</a>
-<a href="#894" id="894">894</a>
-<a href="#895" id="895">895</a>
-<a href="#896" id="896">896</a>
-<a href="#897" id="897">897</a>
-<a href="#898" id="898">898</a>
-<a href="#899" id="899">899</a>
-<a href="#900" id="900">900</a>
-<a href="#901" id="901">901</a>
-<a href="#902" id="902">902</a>
-<a href="#903" id="903">903</a>
-<a href="#904" id="904">904</a>
-<a href="#905" id="905">905</a>
-<a href="#906" id="906">906</a>
-<a href="#907" id="907">907</a>
-<a href="#908" id="908">908</a>
-<a href="#909" id="909">909</a>
-<a href="#910" id="910">910</a>
-<a href="#911" id="911">911</a>
-<a href="#912" id="912">912</a>
-<a href="#913" id="913">913</a>
-<a href="#914" id="914">914</a>
-<a href="#915" id="915">915</a>
-<a href="#916" id="916">916</a>
-<a href="#917" id="917">917</a>
-</pre><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
+</pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
@@ -940,39 +721,39 @@
 
 <span class="kw">use </span>async_trait::async_trait;
 <span class="kw">use </span>bytes::Buf;
-<span class="kw">use </span>bytes::Bytes;
-<span class="kw">use </span>http::header::CONTENT_DISPOSITION;
-<span class="kw">use </span>http::header::CONTENT_LENGTH;
-<span class="kw">use </span>http::header::CONTENT_TYPE;
-<span class="kw">use </span>http::header::RANGE;
-<span class="kw">use </span>http::Request;
-<span class="kw">use </span>http::Response;
 <span class="kw">use </span>http::StatusCode;
 <span class="kw">use </span>http::Uri;
 <span class="kw">use </span>log::debug;
-<span class="kw">use </span>reqsign::AliyunOssBuilder;
+<span class="kw">use </span>reqsign::AliyunConfig;
+<span class="kw">use </span>reqsign::AliyunLoader;
 <span class="kw">use </span>reqsign::AliyunOssSigner;
-<span class="kw">use </span>serde::Deserialize;
-<span class="kw">use </span>serde::Serialize;
 
+<span class="kw">use </span><span class="kw">super</span>::appender::OssAppender;
+<span class="kw">use </span><span class="kw">super</span>::core::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">super</span>::error::parse_error;
 <span class="kw">use </span><span class="kw">super</span>::pager::OssPager;
 <span class="kw">use </span><span class="kw">super</span>::writer::OssWriter;
-<span class="kw">use </span><span class="kw">crate</span>::ops::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
+<span class="kw">const </span>DEFAULT_WRITE_MIN_SIZE: usize = <span class="number">8 </span>* <span class="number">1024 </span>* <span class="number">1024</span>;
 <span class="doccomment">/// Aliyun Object Storage Service (OSS) support
 ///
 /// # Capabilities
 ///
 /// This service can be used to:
 ///
+/// - [x] stat
 /// - [x] read
 /// - [x] write
+/// - [x] append
+/// - [x] create_dir
+/// - [x] delete
+/// - [x] copy
+/// - [ ] rename
 /// - [x] list
 /// - [x] scan
-/// - [ ] presign
+/// - [x] presign
 /// - [ ] blocking
 ///
 /// # Configuration
@@ -1029,7 +810,7 @@
 ///     Ok(())
 /// }
 /// ```
-</span><span class="attr">#[derive(Default, Clone)]
+</span><span class="attr">#[derive(Default)]
 </span><span class="kw">pub struct </span>OssBuilder {
     root: <span class="prelude-ty">Option</span>&lt;String&gt;,
 
@@ -1037,13 +818,17 @@
     presign_endpoint: <span class="prelude-ty">Option</span>&lt;String&gt;,
     bucket: String,
 
+    <span class="comment">// sse options
+    </span>server_side_encryption: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    server_side_encryption_key_id: <span class="prelude-ty">Option</span>&lt;String&gt;,
+
     <span class="comment">// authenticate options
     </span>access_key_id: <span class="prelude-ty">Option</span>&lt;String&gt;,
     access_key_secret: <span class="prelude-ty">Option</span>&lt;String&gt;,
 
-    allow_anonymous: bool,
-
     http_client: <span class="prelude-ty">Option</span>&lt;HttpClient&gt;,
+    <span class="doccomment">/// the size of each part, and the range is 5MB ~ 5 GB.
+    </span>write_min_size: <span class="prelude-ty">Option</span>&lt;usize&gt;,
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>OssBuilder {
@@ -1051,19 +836,9 @@
         <span class="kw">let </span><span class="kw-2">mut </span>d = f.debug_struct(<span class="string">&quot;Builder&quot;</span>);
         d.field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
             .field(<span class="string">&quot;bucket&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.bucket)
-            .field(<span class="string">&quot;endpoint&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint)
-            .field(<span class="string">&quot;presign_endpoint&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.presign_endpoint)
-            .field(<span class="string">&quot;allow_anonymous&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.allow_anonymous);
+            .field(<span class="string">&quot;endpoint&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint);
 
-        <span class="kw">if </span><span class="self">self</span>.access_key_id.is_some() {
-            d.field(<span class="string">&quot;access_key_id&quot;</span>, <span class="kw-2">&amp;</span><span class="string">&quot;&lt;redacted&gt;&quot;</span>);
-        }
-
-        <span class="kw">if </span><span class="self">self</span>.access_key_secret.is_some() {
-            d.field(<span class="string">&quot;access_key_secret&quot;</span>, <span class="kw-2">&amp;</span><span class="string">&quot;&lt;redacted&gt;&quot;</span>);
-        }
-
-        d.finish()
+        d.finish_non_exhaustive()
     }
 }
 
@@ -1139,12 +914,6 @@
         <span class="self">self
     </span>}
 
-    <span class="doccomment">/// Anonymously access the bucket.
-    </span><span class="kw">pub fn </span>allow_anonymous(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.allow_anonymous = <span class="bool-val">true</span>;
-        <span class="self">self
-    </span>}
-
     <span class="doccomment">/// Specify the http client that used by this service.
     ///
     /// # Notes
@@ -1194,6 +963,49 @@
         };
         <span class="prelude-val">Ok</span>((endpoint, host))
     }
+
+    <span class="doccomment">/// Set server_side_encryption for this backend.
+    ///
+    /// Available values: `AES256`, `KMS`.
+    ///
+    /// Reference: &lt;https://www.alibabacloud.com/help/en/object-storage-service/latest/server-side-encryption-5&gt;
+    /// Brief explanation:
+    /// There are two server-side encryption methods available:
+    /// SSE-AES256:
+    ///     1. Configure the bucket encryption mode as OSS-managed and specify the encryption algorithm as AES256.
+    ///     2. Include the `x-oss-server-side-encryption` parameter in the request and set its value to AES256.
+    /// SSE-KMS:
+    ///     1. To use this service, you need to first enable KMS.
+    ///     2. Configure the bucket encryption mode as KMS, and specify the specific CMK ID for BYOK (Bring Your Own Key)
+    ///        or not specify the specific CMK ID for OSS-managed KMS key.
+    ///     3. Include the `x-oss-server-side-encryption` parameter in the request and set its value to KMS.
+    ///     4. If a specific CMK ID is specified, include the `x-oss-server-side-encryption-key-id` parameter in the request, and set its value to the specified CMK ID.
+    </span><span class="kw">pub fn </span>server_side_encryption(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="kw">if </span>!v.is_empty() {
+            <span class="self">self</span>.server_side_encryption = <span class="prelude-val">Some</span>(v.to_string())
+        }
+        <span class="self">self
+    </span>}
+
+    <span class="doccomment">/// Set server_side_encryption_key_id for this backend.
+    ///
+    /// # Notes
+    ///
+    /// This option only takes effect when server_side_encryption equals to KMS.
+    </span><span class="kw">pub fn </span>server_side_encryption_key_id(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="kw">if </span>!v.is_empty() {
+            <span class="self">self</span>.server_side_encryption_key_id = <span class="prelude-val">Some</span>(v.to_string())
+        }
+        <span class="self">self
+    </span>}
+
+    <span class="doccomment">/// set the minimum size of unsized write, it should be greater than 5 MB.
+    /// Reference: [OSS Multipart upload](https://www.alibabacloud.com/help/en/object-storage-service/latest/multipart-upload-6)
+    </span><span class="kw">pub fn </span>write_min_size(<span class="kw-2">&amp;mut </span><span class="self">self</span>, write_min_size: usize) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.write_min_size = <span class="prelude-val">Some</span>(write_min_size);
+
+        <span class="self">self
+    </span>}
 }
 
 <span class="kw">impl </span>Builder <span class="kw">for </span>OssBuilder {
@@ -1211,10 +1023,12 @@
         map.get(<span class="string">&quot;access_key_id&quot;</span>).map(|v| builder.access_key_id(v));
         map.get(<span class="string">&quot;access_key_secret&quot;</span>)
             .map(|v| builder.access_key_secret(v));
-        map.get(<span class="string">&quot;allow_anonymous&quot;</span>)
-            .filter(|v| <span class="kw-2">*</span>v == <span class="string">&quot;on&quot; </span>|| <span class="kw-2">*</span>v == <span class="string">&quot;true&quot;</span>)
-            .map(|<span class="kw">_</span>| builder.allow_anonymous());
-
+        map.get(<span class="string">&quot;server_side_encryption&quot;</span>)
+            .map(|v| builder.server_side_encryption(v));
+        map.get(<span class="string">&quot;server_side_encryption_key_id&quot;</span>)
+            .map(|v| builder.server_side_encryption_key_id(v));
+        map.get(<span class="string">&quot;write_min_size&quot;</span>)
+            .map(|v| builder.write_min_size(v.parse::&lt;usize&gt;().unwrap()));
         builder
     }
 
@@ -1254,66 +1068,70 @@
         };
         <span class="macro">debug!</span>(<span class="string">&quot;backend use presign_endpoint: {}&quot;</span>, <span class="kw-2">&amp;</span>presign_endpoint);
 
-        <span class="kw">let </span><span class="kw-2">mut </span>signer_builder = AliyunOssBuilder::default();
+        <span class="kw">let </span>server_side_encryption = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.server_side_encryption {
+            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
+            <span class="prelude-val">Some</span>(v) =&gt; <span class="prelude-val">Some</span>(
+                build_header_value(v)
+                    .map_err(|err| err.with_context(<span class="string">&quot;key&quot;</span>, <span class="string">&quot;server_side_encryption&quot;</span>))<span class="question-mark">?</span>,
+            ),
+        };
 
-        <span class="kw">if </span><span class="self">self</span>.allow_anonymous {
-            signer_builder.allow_anonymous();
+        <span class="kw">let </span>server_side_encryption_key_id = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.server_side_encryption_key_id {
+            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
+            <span class="prelude-val">Some</span>(v) =&gt; <span class="prelude-val">Some</span>(
+                build_header_value(v)
+                    .map_err(|err| err.with_context(<span class="string">&quot;key&quot;</span>, <span class="string">&quot;server_side_encryption_key_id&quot;</span>))<span class="question-mark">?</span>,
+            ),
+        };
+
+        <span class="kw">let </span><span class="kw-2">mut </span>cfg = AliyunConfig::default();
+        <span class="comment">// Load cfg from env first.
+        </span>cfg = cfg.from_env();
+
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = <span class="self">self</span>.access_key_id.take() {
+            cfg.access_key_id = <span class="prelude-val">Some</span>(v);
         }
 
-        signer_builder.bucket(bucket);
-
-        <span class="kw">if let </span>(<span class="prelude-val">Some</span>(ak), <span class="prelude-val">Some</span>(sk)) = (<span class="kw-2">&amp;</span><span class="self">self</span>.access_key_id, <span class="kw-2">&amp;</span><span class="self">self</span>.access_key_secret) {
-            signer_builder.access_key_id(ak);
-            signer_builder.access_key_secret(sk);
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = <span class="self">self</span>.access_key_secret.take() {
+            cfg.access_key_secret = <span class="prelude-val">Some</span>(v);
         }
 
-        <span class="kw">let </span>signer = signer_builder.build().map_err(|e| {
-            Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;build AliyunOssSigner&quot;</span>)
-                .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Oss)
-                .with_context(<span class="string">&quot;endpoint&quot;</span>, <span class="kw-2">&amp;</span>endpoint)
-                .with_context(<span class="string">&quot;bucket&quot;</span>, bucket)
-                .set_source(e)
-        })<span class="question-mark">?</span>;
+        <span class="kw">let </span>loader = AliyunLoader::new(client.client(), cfg);
 
-        <span class="macro">debug!</span>(<span class="string">&quot;Backend build finished: {:?}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
+        <span class="kw">let </span>signer = AliyunOssSigner::new(bucket);
+
+        <span class="kw">let </span>write_min_size = <span class="self">self</span>.write_min_size.unwrap_or(DEFAULT_WRITE_MIN_SIZE);
+        <span class="kw">if </span>write_min_size &lt; <span class="number">5 </span>* <span class="number">1024 </span>* <span class="number">1024 </span>{
+            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
+                ErrorKind::ConfigInvalid,
+                <span class="string">&quot;The write minimum buffer size is misconfigured&quot;</span>,
+            )
+            .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Oss));
+        }
+        <span class="macro">debug!</span>(<span class="string">&quot;Backend build finished&quot;</span>);
 
         <span class="prelude-val">Ok</span>(OssBackend {
-            root,
-            endpoint,
-            presign_endpoint,
-            host,
-            client,
-            bucket: <span class="self">self</span>.bucket.clone(),
-            signer: Arc::new(signer),
+            core: Arc::new(OssCore {
+                root,
+                bucket: bucket.to_owned(),
+                endpoint,
+                host,
+                presign_endpoint,
+                signer,
+                loader,
+                client,
+                server_side_encryption,
+                server_side_encryption_key_id,
+                write_min_size,
+            }),
         })
     }
 }
 
-<span class="attr">#[derive(Clone)]
+<span class="attr">#[derive(Debug, Clone)]
 </span><span class="doccomment">/// Aliyun Object Storage Service backend
 </span><span class="kw">pub struct </span>OssBackend {
-    <span class="kw">pub </span>client: HttpClient,
-
-    root: String,
-    bucket: String,
-    <span class="doccomment">/// buffered host string
-    ///
-    /// format: &lt;bucket-name&gt;.&lt;endpoint-domain-name&gt;
-    </span>host: String,
-    endpoint: String,
-    presign_endpoint: String,
-    <span class="kw">pub </span>signer: Arc&lt;AliyunOssSigner&gt;,
-}
-
-<span class="kw">impl </span>Debug <span class="kw">for </span>OssBackend {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        f.debug_struct(<span class="string">&quot;Backend&quot;</span>)
-            .field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
-            .field(<span class="string">&quot;bucket&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.bucket)
-            .field(<span class="string">&quot;endpoint&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint)
-            .field(<span class="string">&quot;host&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.host)
-            .finish()
-    }
+    core: Arc&lt;OssCore&gt;,
 }
 
 <span class="attr">#[async_trait]
@@ -1322,41 +1140,84 @@
     <span class="kw">type </span>BlockingReader = ();
     <span class="kw">type </span>Writer = OssWriter;
     <span class="kw">type </span>BlockingWriter = ();
+    <span class="kw">type </span>Appender = OssAppender;
     <span class="kw">type </span>Pager = OssPager;
     <span class="kw">type </span>BlockingPager = ();
 
     <span class="kw">fn </span>info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; AccessorInfo {
-        <span class="kw">use </span>AccessorCapability::<span class="kw-2">*</span>;
-        <span class="kw">use </span>AccessorHint::<span class="kw-2">*</span>;
-
         <span class="kw">let </span><span class="kw-2">mut </span>am = AccessorInfo::default();
         am.set_scheme(Scheme::Oss)
-            .set_root(<span class="kw-2">&amp;</span><span class="self">self</span>.root)
-            .set_name(<span class="kw-2">&amp;</span><span class="self">self</span>.bucket)
-            .set_max_batch_operations(<span class="number">1000</span>)
-            .set_capabilities(Read | Write | List | Scan | Presign | Batch)
-            .set_hints(ReadStreamable);
+            .set_root(<span class="kw-2">&amp;</span><span class="self">self</span>.core.root)
+            .set_name(<span class="kw-2">&amp;</span><span class="self">self</span>.core.bucket)
+            .set_capability(Capability {
+                stat: <span class="bool-val">true</span>,
+                stat_with_if_match: <span class="bool-val">true</span>,
+                stat_with_if_none_match: <span class="bool-val">true</span>,
+
+                read: <span class="bool-val">true</span>,
+                read_can_next: <span class="bool-val">true</span>,
+                read_with_range: <span class="bool-val">true</span>,
+                read_with_if_match: <span class="bool-val">true</span>,
+                read_with_if_none_match: <span class="bool-val">true</span>,
+
+                write: <span class="bool-val">true</span>,
+                write_with_cache_control: <span class="bool-val">true</span>,
+                write_with_content_type: <span class="bool-val">true</span>,
+                write_without_content_length: <span class="bool-val">true</span>,
+                delete: <span class="bool-val">true</span>,
+                create_dir: <span class="bool-val">true</span>,
+                copy: <span class="bool-val">true</span>,
+
+                append: <span class="bool-val">true</span>,
+                append_with_cache_control: <span class="bool-val">true</span>,
+                append_with_content_type: <span class="bool-val">true</span>,
+                append_with_content_disposition: <span class="bool-val">true</span>,
+
+                list: <span class="bool-val">true</span>,
+                list_with_delimiter_slash: <span class="bool-val">true</span>,
+                list_without_delimiter: <span class="bool-val">true</span>,
+
+                presign: <span class="bool-val">true</span>,
+                presign_stat: <span class="bool-val">true</span>,
+                presign_read: <span class="bool-val">true</span>,
+                presign_write: <span class="bool-val">true</span>,
+
+                batch: <span class="bool-val">true</span>,
+                batch_max_operations: <span class="prelude-val">Some</span>(<span class="number">1000</span>),
+
+                ..Default::default()
+            });
 
         am
     }
 
-    <span class="kw">async fn </span>create(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpCreate) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreate&gt; {
+    <span class="kw">async fn </span>create_dir(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpCreateDir) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreateDir&gt; {
         <span class="kw">let </span>resp = <span class="self">self
-            </span>.oss_put_object(path, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, AsyncBody::Empty)
+            </span>.core
+            .oss_put_object(path, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, AsyncBody::Empty)
             .<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="kw">let </span>status = resp.status();
 
         <span class="kw">match </span>status {
             StatusCode::CREATED | StatusCode::OK =&gt; {
                 resp.into_body().consume().<span class="kw">await</span><span class="question-mark">?</span>;
-                <span class="prelude-val">Ok</span>(RpCreate::default())
+                <span class="prelude-val">Ok</span>(RpCreateDir::default())
             }
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
         }
     }
 
     <span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
-        <span class="kw">let </span>resp = <span class="self">self</span>.oss_get_object(path, args.range()).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>resp = <span class="self">self
+            </span>.core
+            .oss_get_object(
+                path,
+                args.range(),
+                args.if_match(),
+                args.if_none_match(),
+                args.override_content_disposition(),
+            )
+            .<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="kw">let </span>status = resp.status();
 
@@ -1370,26 +1231,42 @@
     }
 
     <span class="kw">async fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::Writer)&gt; {
-        <span class="kw">if </span>args.append() {
-            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
-                ErrorKind::Unsupported,
-                <span class="string">&quot;append write is not supported&quot;</span>,
-            ));
-        }
-
         <span class="prelude-val">Ok</span>((
             RpWrite::default(),
-            OssWriter::new(<span class="self">self</span>.clone(), args, path.to_string()),
+            OssWriter::new(<span class="self">self</span>.core.clone(), path, args),
         ))
     }
 
-    <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
+    <span class="kw">async fn </span>append(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpAppend) -&gt; <span class="prelude-ty">Result</span>&lt;(RpAppend, <span class="self">Self</span>::Appender)&gt; {
+        <span class="prelude-val">Ok</span>((
+            RpAppend::default(),
+            OssAppender::new(<span class="self">self</span>.core.clone(), path, args),
+        ))
+    }
+
+    <span class="kw">async fn </span>copy(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, _args: OpCopy) -&gt; <span class="prelude-ty">Result</span>&lt;RpCopy&gt; {
+        <span class="kw">let </span>resp = <span class="self">self</span>.core.oss_copy_object(from, to).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>status = resp.status();
+
+        <span class="kw">match </span>status {
+            StatusCode::OK =&gt; {
+                resp.into_body().consume().<span class="kw">await</span><span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>(RpCopy::default())
+            }
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
+        }
+    }
+
+    <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
         <span class="kw">if </span>path == <span class="string">&quot;/&quot; </span>{
             <span class="kw">let </span>m = Metadata::new(EntryMode::DIR);
             <span class="kw">return </span><span class="prelude-val">Ok</span>(RpStat::new(m));
         }
 
-        <span class="kw">let </span>resp = <span class="self">self</span>.oss_head_object(path).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>resp = <span class="self">self
+            </span>.core
+            .oss_head_object(path, args.if_match(), args.if_none_match())
+            .<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="kw">let </span>status = resp.status();
 
@@ -1405,7 +1282,7 @@
     }
 
     <span class="kw">async fn </span>delete(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpDelete) -&gt; <span class="prelude-ty">Result</span>&lt;RpDelete&gt; {
-        <span class="kw">let </span>resp = <span class="self">self</span>.oss_delete_object(path).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>resp = <span class="self">self</span>.core.oss_delete_object(path).<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="kw">let </span>status = resp.status();
         <span class="kw">match </span>status {
             StatusCode::NO_CONTENT | StatusCode::NOT_FOUND =&gt; {
@@ -1419,35 +1296,37 @@
     <span class="kw">async fn </span>list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;(RpList, <span class="self">Self</span>::Pager)&gt; {
         <span class="prelude-val">Ok</span>((
             RpList::default(),
-            OssPager::new(Arc::new(<span class="self">self</span>.clone()), <span class="kw-2">&amp;</span><span class="self">self</span>.root, path, <span class="string">&quot;/&quot;</span>, args.limit()),
+            OssPager::new(<span class="self">self</span>.core.clone(), path, args.delimiter(), args.limit()),
         ))
     }
 
-    <span class="kw">async fn </span>scan(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpScan) -&gt; <span class="prelude-ty">Result</span>&lt;(RpScan, <span class="self">Self</span>::Pager)&gt; {
-        <span class="prelude-val">Ok</span>((
-            RpScan::default(),
-            OssPager::new(Arc::new(<span class="self">self</span>.clone()), <span class="kw-2">&amp;</span><span class="self">self</span>.root, path, <span class="string">&quot;&quot;</span>, args.limit()),
-        ))
-    }
-
-    <span class="kw">fn </span>presign(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpPresign) -&gt; <span class="prelude-ty">Result</span>&lt;RpPresign&gt; {
+    <span class="kw">async fn </span>presign(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpPresign) -&gt; <span class="prelude-ty">Result</span>&lt;RpPresign&gt; {
         <span class="comment">// We will not send this request out, just for signing.
         </span><span class="kw">let </span><span class="kw-2">mut </span>req = <span class="kw">match </span>args.operation() {
-            PresignOperation::Stat(<span class="kw">_</span>) =&gt; <span class="self">self</span>.oss_head_object_request(path, <span class="bool-val">true</span>)<span class="question-mark">?</span>,
-            PresignOperation::Read(v) =&gt; <span class="self">self</span>.oss_get_object_request(path, v.range(), <span class="bool-val">true</span>)<span class="question-mark">?</span>,
-            PresignOperation::Write(v) =&gt; <span class="self">self</span>.oss_put_object_request(
+            PresignOperation::Stat(v) =&gt; {
+                <span class="self">self</span>.core
+                    .oss_head_object_request(path, <span class="bool-val">true</span>, v.if_match(), v.if_none_match())<span class="question-mark">?
+            </span>}
+            PresignOperation::Read(v) =&gt; <span class="self">self</span>.core.oss_get_object_request(
+                path,
+                v.range(),
+                <span class="bool-val">true</span>,
+                v.if_match(),
+                v.if_none_match(),
+                v.override_content_disposition(),
+            )<span class="question-mark">?</span>,
+            PresignOperation::Write(v) =&gt; <span class="self">self</span>.core.oss_put_object_request(
                 path,
                 <span class="prelude-val">None</span>,
                 v.content_type(),
                 v.content_disposition(),
+                v.cache_control(),
                 AsyncBody::Empty,
                 <span class="bool-val">true</span>,
             )<span class="question-mark">?</span>,
         };
 
-        <span class="self">self</span>.signer
-            .sign_query(<span class="kw-2">&amp;mut </span>req, args.expire())
-            .map_err(new_request_sign_error)<span class="question-mark">?</span>;
+        <span class="self">self</span>.core.sign_query(<span class="kw-2">&amp;mut </span>req, args.expire()).<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="comment">// We don&#39;t need this request anymore, consume it directly.
         </span><span class="kw">let </span>(parts, <span class="kw">_</span>) = req.into_parts();
@@ -1461,376 +1340,58 @@
 
     <span class="kw">async fn </span>batch(<span class="kw-2">&amp;</span><span class="self">self</span>, args: OpBatch) -&gt; <span class="prelude-ty">Result</span>&lt;RpBatch&gt; {
         <span class="kw">let </span>ops = args.into_operation();
-        <span class="kw">match </span>ops {
-            BatchOperations::Delete(ops) =&gt; {
-                <span class="comment">// Sadly, OSS will not return failed keys, so we will build
-                // a set to calculate the failed keys.
-                </span><span class="kw">let </span><span class="kw-2">mut </span>keys = HashSet::new();
+        <span class="comment">// Sadly, OSS will not return failed keys, so we will build
+        // a set to calculate the failed keys.
+        </span><span class="kw">let </span><span class="kw-2">mut </span>keys = HashSet::new();
 
-                <span class="kw">let </span>ops_len = ops.len();
-                <span class="kw">if </span>ops_len &gt; <span class="number">1000 </span>{
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
-                        ErrorKind::Unsupported,
-                        <span class="string">&quot;oss services only allow delete up to 1000 keys at once&quot;</span>,
-                    )
-                    .with_context(<span class="string">&quot;length&quot;</span>, ops_len.to_string()));
-                }
+        <span class="kw">let </span>ops_len = ops.len();
+        <span class="kw">if </span>ops_len &gt; <span class="number">1000 </span>{
+            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
+                ErrorKind::Unsupported,
+                <span class="string">&quot;oss services only allow delete up to 1000 keys at once&quot;</span>,
+            )
+            .with_context(<span class="string">&quot;length&quot;</span>, ops_len.to_string()));
+        }
 
-                <span class="kw">let </span>paths = ops
-                    .into_iter()
-                    .map(|(p, <span class="kw">_</span>)| {
-                        keys.insert(p.clone());
-                        p
-                    })
-                    .collect();
+        <span class="kw">let </span>paths = ops
+            .into_iter()
+            .map(|(p, <span class="kw">_</span>)| {
+                keys.insert(p.clone());
+                p
+            })
+            .collect();
 
-                <span class="kw">let </span>resp = <span class="self">self</span>.oss_delete_objects(paths).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>resp = <span class="self">self</span>.core.oss_delete_objects(paths).<span class="kw">await</span><span class="question-mark">?</span>;
 
-                <span class="kw">let </span>status = resp.status();
+        <span class="kw">let </span>status = resp.status();
 
-                <span class="kw">if let </span>StatusCode::OK = status {
-                    <span class="kw">let </span>bs = resp.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">if let </span>StatusCode::OK = status {
+            <span class="kw">let </span>bs = resp.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>;
 
-                    <span class="kw">let </span>result: DeleteObjectsResult = quick_xml::de::from_reader(bs.reader())
-                        .map_err(new_xml_deserialize_error)<span class="question-mark">?</span>;
+            <span class="kw">let </span>result: DeleteObjectsResult =
+                quick_xml::de::from_reader(bs.reader()).map_err(new_xml_deserialize_error)<span class="question-mark">?</span>;
 
-                    <span class="kw">let </span><span class="kw-2">mut </span>batched_result = Vec::with_capacity(ops_len);
-                    <span class="kw">for </span>i <span class="kw">in </span>result.deleted {
-                        <span class="kw">let </span>path = build_rel_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, <span class="kw-2">&amp;</span>i.key);
-                        keys.remove(<span class="kw-2">&amp;</span>path);
-                        batched_result.push((path, <span class="prelude-val">Ok</span>(RpDelete::default())));
-                    }
-                    <span class="comment">// TODO: we should handle those errors with code.
-                    </span><span class="kw">for </span>i <span class="kw">in </span>keys {
-                        batched_result.push((
-                            i,
-                            <span class="prelude-val">Err</span>(Error::new(
-                                ErrorKind::Unexpected,
-                                <span class="string">&quot;oss delete this key failed for reason we don&#39;t know&quot;</span>,
-                            )),
-                        ));
-                    }
-
-                    <span class="prelude-val">Ok</span>(RpBatch::new(BatchedResults::Delete(batched_result)))
-                } <span class="kw">else </span>{
-                    <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>)
-                }
+            <span class="kw">let </span><span class="kw-2">mut </span>batched_result = Vec::with_capacity(ops_len);
+            <span class="kw">for </span>i <span class="kw">in </span>result.deleted {
+                <span class="kw">let </span>path = build_rel_path(<span class="kw-2">&amp;</span><span class="self">self</span>.core.root, <span class="kw-2">&amp;</span>i.key);
+                keys.remove(<span class="kw-2">&amp;</span>path);
+                batched_result.push((path, <span class="prelude-val">Ok</span>(RpDelete::default().into())));
             }
-        }
-    }
-}
+            <span class="comment">// TODO: we should handle those errors with code.
+            </span><span class="kw">for </span>i <span class="kw">in </span>keys {
+                batched_result.push((
+                    i,
+                    <span class="prelude-val">Err</span>(Error::new(
+                        ErrorKind::Unexpected,
+                        <span class="string">&quot;oss delete this key failed for reason we don&#39;t know&quot;</span>,
+                    )),
+                ));
+            }
 
-<span class="kw">impl </span>OssBackend {
-    <span class="kw">pub fn </span>oss_put_object_request(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        path: <span class="kw-2">&amp;</span>str,
-        size: <span class="prelude-ty">Option</span>&lt;usize&gt;,
-        content_type: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
-        content_disposition: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
-        body: AsyncBody,
-        is_presign: bool,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
-        <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
-        <span class="kw">let </span>endpoint = <span class="self">self</span>.get_endpoint(is_presign);
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/{}&quot;</span>, endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
-
-        <span class="kw">let </span><span class="kw-2">mut </span>req = Request::put(<span class="kw-2">&amp;</span>url);
-
-        req = req.header(CONTENT_LENGTH, size.unwrap_or_default());
-
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(mime) = content_type {
-            req = req.header(CONTENT_TYPE, mime);
-        }
-
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(pos) = content_disposition {
-            req = req.header(CONTENT_DISPOSITION, pos);
-        }
-
-        <span class="kw">let </span>req = req.body(body).map_err(new_request_build_error)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(req)
-    }
-
-    <span class="kw">fn </span>oss_get_object_request(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        path: <span class="kw-2">&amp;</span>str,
-        range: BytesRange,
-        is_presign: bool,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
-        <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
-        <span class="kw">let </span>endpoint = <span class="self">self</span>.get_endpoint(is_presign);
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/{}&quot;</span>, endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
-
-        <span class="kw">let </span><span class="kw-2">mut </span>req = Request::get(<span class="kw-2">&amp;</span>url);
-        req = req.header(CONTENT_TYPE, <span class="string">&quot;application/octet-stream&quot;</span>);
-
-        <span class="kw">if </span>!range.is_full() {
-            req = req.header(RANGE, range.to_header());
-            <span class="comment">// Adding `x-oss-range-behavior` header to use standard behavior.
-            // ref: https://help.aliyun.com/document_detail/39571.html
-            </span>req = req.header(<span class="string">&quot;x-oss-range-behavior&quot;</span>, <span class="string">&quot;standard&quot;</span>);
-        }
-
-        <span class="kw">let </span>req = req
-            .body(AsyncBody::Empty)
-            .map_err(new_request_build_error)<span class="question-mark">?</span>;
-
-        <span class="prelude-val">Ok</span>(req)
-    }
-
-    <span class="kw">fn </span>oss_delete_object_request(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
-        <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
-        <span class="kw">let </span>endpoint = <span class="self">self</span>.get_endpoint(<span class="bool-val">false</span>);
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/{}&quot;</span>, endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
-        <span class="kw">let </span>req = Request::delete(<span class="kw-2">&amp;</span>url);
-
-        <span class="kw">let </span>req = req
-            .body(AsyncBody::Empty)
-            .map_err(new_request_build_error)<span class="question-mark">?</span>;
-
-        <span class="prelude-val">Ok</span>(req)
-    }
-
-    <span class="kw">fn </span>oss_head_object_request(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, is_presign: bool) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
-        <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
-        <span class="kw">let </span>endpoint = <span class="self">self</span>.get_endpoint(is_presign);
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/{}&quot;</span>, endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
-
-        <span class="kw">let </span>req = Request::head(<span class="kw-2">&amp;</span>url);
-        <span class="kw">let </span>req = req
-            .body(AsyncBody::Empty)
-            .map_err(new_request_build_error)<span class="question-mark">?</span>;
-
-        <span class="prelude-val">Ok</span>(req)
-    }
-
-    <span class="kw">fn </span>oss_list_object_request(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        path: <span class="kw-2">&amp;</span>str,
-        token: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
-        delimiter: <span class="kw-2">&amp;</span>str,
-        limit: <span class="prelude-ty">Option</span>&lt;usize&gt;,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;Request&lt;AsyncBody&gt;&gt; {
-        <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
-
-        <span class="kw">let </span>endpoint = <span class="self">self</span>.get_endpoint(<span class="bool-val">false</span>);
-        <span class="kw">let </span>url = <span class="macro">format!</span>(
-            <span class="string">&quot;{}/?list-type=2&amp;delimiter={delimiter}&amp;prefix={}{}{}&quot;</span>,
-            endpoint,
-            percent_encode_path(<span class="kw-2">&amp;</span>p),
-            limit.map(|t| <span class="macro">format!</span>(<span class="string">&quot;&amp;max-keys={t}&quot;</span>)).unwrap_or_default(),
-            token
-                .map(|t| <span class="macro">format!</span>(<span class="string">&quot;&amp;continuation-token={}&quot;</span>, percent_encode_path(t)))
-                .unwrap_or_default(),
-        );
-
-        <span class="kw">let </span>req = Request::get(<span class="kw-2">&amp;</span>url)
-            .body(AsyncBody::Empty)
-            .map_err(new_request_build_error)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(req)
-    }
-
-    <span class="kw">async fn </span>oss_get_object(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        path: <span class="kw-2">&amp;</span>str,
-        range: BytesRange,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self</span>.oss_get_object_request(path, range, <span class="bool-val">false</span>)<span class="question-mark">?</span>;
-
-        <span class="self">self</span>.signer.sign(<span class="kw-2">&amp;mut </span>req).map_err(new_request_sign_error)<span class="question-mark">?</span>;
-        <span class="self">self</span>.client.send_async(req).<span class="kw">await
-    </span>}
-
-    <span class="kw">async fn </span>oss_head_object(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self</span>.oss_head_object_request(path, <span class="bool-val">false</span>)<span class="question-mark">?</span>;
-
-        <span class="self">self</span>.signer.sign(<span class="kw-2">&amp;mut </span>req).map_err(new_request_sign_error)<span class="question-mark">?</span>;
-        <span class="self">self</span>.client.send_async(req).<span class="kw">await
-    </span>}
-
-    <span class="kw">async fn </span>oss_put_object(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        path: <span class="kw-2">&amp;</span>str,
-        size: <span class="prelude-ty">Option</span>&lt;usize&gt;,
-        content_type: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
-        content_disposition: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
-        body: AsyncBody,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self</span>.oss_put_object_request(
-            path,
-            size,
-            content_type,
-            content_disposition,
-            body,
-            <span class="bool-val">false</span>,
-        )<span class="question-mark">?</span>;
-
-        <span class="self">self</span>.signer.sign(<span class="kw-2">&amp;mut </span>req).map_err(new_request_sign_error)<span class="question-mark">?</span>;
-        <span class="self">self</span>.client.send_async(req).<span class="kw">await
-    </span>}
-
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">async fn </span>oss_list_object(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        path: <span class="kw-2">&amp;</span>str,
-        token: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
-        delimiter: <span class="kw-2">&amp;</span>str,
-        limit: <span class="prelude-ty">Option</span>&lt;usize&gt;,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self</span>.oss_list_object_request(path, token, delimiter, limit)<span class="question-mark">?</span>;
-
-        <span class="self">self</span>.signer.sign(<span class="kw-2">&amp;mut </span>req).map_err(new_request_sign_error)<span class="question-mark">?</span>;
-        <span class="self">self</span>.client.send_async(req).<span class="kw">await
-    </span>}
-
-    <span class="kw">async fn </span>oss_delete_object(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>req = <span class="self">self</span>.oss_delete_object_request(path)<span class="question-mark">?</span>;
-        <span class="self">self</span>.signer.sign(<span class="kw-2">&amp;mut </span>req).map_err(new_request_sign_error)<span class="question-mark">?</span>;
-        <span class="self">self</span>.client.send_async(req).<span class="kw">await
-    </span>}
-
-    <span class="kw">async fn </span>oss_delete_objects(<span class="kw-2">&amp;</span><span class="self">self</span>, paths: Vec&lt;String&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/?delete&quot;</span>, <span class="self">self</span>.endpoint);
-
-        <span class="kw">let </span>req = Request::post(<span class="kw-2">&amp;</span>url);
-
-        <span class="kw">let </span>content = quick_xml::se::to_string(<span class="kw-2">&amp;</span>DeleteObjectsRequest {
-            object: paths
-                .into_iter()
-                .map(|path| DeleteObjectsRequestObject {
-                    key: build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, <span class="kw-2">&amp;</span>path),
-                })
-                .collect(),
-        })
-        .map_err(new_xml_deserialize_error)<span class="question-mark">?</span>;
-
-        <span class="comment">// Make sure content length has been set to avoid post with chunked encoding.
-        </span><span class="kw">let </span>req = req.header(CONTENT_LENGTH, content.len());
-        <span class="comment">// Set content-type to `application/xml` to avoid mixed with form post.
-        </span><span class="kw">let </span>req = req.header(CONTENT_TYPE, <span class="string">&quot;application/xml&quot;</span>);
-        <span class="comment">// Set content-md5 as required by API.
-        </span><span class="kw">let </span>req = req.header(<span class="string">&quot;CONTENT-MD5&quot;</span>, format_content_md5(content.as_bytes()));
-
-        <span class="kw">let </span><span class="kw-2">mut </span>req = req
-            .body(AsyncBody::Bytes(Bytes::from(content)))
-            .map_err(new_request_build_error)<span class="question-mark">?</span>;
-
-        <span class="self">self</span>.signer.sign(<span class="kw-2">&amp;mut </span>req).map_err(new_request_sign_error)<span class="question-mark">?</span>;
-
-        <span class="self">self</span>.client.send_async(req).<span class="kw">await
-    </span>}
-
-    <span class="kw">fn </span>get_endpoint(<span class="kw-2">&amp;</span><span class="self">self</span>, is_presign: bool) -&gt; <span class="kw-2">&amp;</span>str {
-        <span class="kw">if </span>is_presign {
-            <span class="kw-2">&amp;</span><span class="self">self</span>.presign_endpoint
+            <span class="prelude-val">Ok</span>(RpBatch::new(batched_result))
         } <span class="kw">else </span>{
-            <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint
+            <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>)
         }
     }
 }
-
-<span class="doccomment">/// Request of DeleteObjects.
-</span><span class="attr">#[derive(Default, Debug, Serialize)]
-#[serde(default, rename = <span class="string">&quot;Delete&quot;</span>, rename_all = <span class="string">&quot;PascalCase&quot;</span>)]
-</span><span class="kw">struct </span>DeleteObjectsRequest {
-    object: Vec&lt;DeleteObjectsRequestObject&gt;,
-}
-
-<span class="attr">#[derive(Default, Debug, Serialize)]
-#[serde(rename_all = <span class="string">&quot;PascalCase&quot;</span>)]
-</span><span class="kw">struct </span>DeleteObjectsRequestObject {
-    key: String,
-}
-
-<span class="doccomment">/// Result of DeleteObjects.
-</span><span class="attr">#[derive(Default, Debug, Deserialize)]
-#[serde(default, rename = <span class="string">&quot;DeleteResult&quot;</span>, rename_all = <span class="string">&quot;PascalCase&quot;</span>)]
-</span><span class="kw">struct </span>DeleteObjectsResult {
-    deleted: Vec&lt;DeleteObjectsResultDeleted&gt;,
-}
-
-<span class="attr">#[derive(Default, Debug, Deserialize)]
-#[serde(rename_all = <span class="string">&quot;PascalCase&quot;</span>)]
-</span><span class="kw">struct </span>DeleteObjectsResultDeleted {
-    key: String,
-}
-
-<span class="attr">#[derive(Default, Debug, Deserialize)]
-#[serde(default, rename_all = <span class="string">&quot;PascalCase&quot;</span>)]
-</span><span class="kw">struct </span>DeleteObjectsResultError {
-    code: String,
-    key: String,
-    message: String,
-}
-
-<span class="attr">#[cfg(test)]
-</span><span class="kw">mod </span>tests {
-    <span class="kw">use </span>bytes::Buf;
-    <span class="kw">use </span>bytes::Bytes;
-
-    <span class="kw">use super</span>::<span class="kw-2">*</span>;
-
-    <span class="doccomment">/// This example is from https://www.alibabacloud.com/help/zh/object-storage-service/latest/deletemultipleobjects
-    </span><span class="attr">#[test]
-    </span><span class="kw">fn </span>test_serialize_delete_objects_request() {
-        <span class="kw">let </span>req = DeleteObjectsRequest {
-            object: <span class="macro">vec!</span>[
-                DeleteObjectsRequestObject {
-                    key: <span class="string">&quot;multipart.data&quot;</span>.to_string(),
-                },
-                DeleteObjectsRequestObject {
-                    key: <span class="string">&quot;test.jpg&quot;</span>.to_string(),
-                },
-                DeleteObjectsRequestObject {
-                    key: <span class="string">&quot;demo.jpg&quot;</span>.to_string(),
-                },
-            ],
-        };
-
-        <span class="kw">let </span>actual = quick_xml::se::to_string(<span class="kw-2">&amp;</span>req).expect(<span class="string">&quot;must succeed&quot;</span>);
-
-        <span class="macro">pretty_assertions::assert_eq!</span>(
-            actual,
-            <span class="string">r#&quot;&lt;Delete&gt;
-  &lt;Object&gt;
-    &lt;Key&gt;multipart.data&lt;/Key&gt;
-  &lt;/Object&gt;
-  &lt;Object&gt;
-    &lt;Key&gt;test.jpg&lt;/Key&gt;
-  &lt;/Object&gt;
-  &lt;Object&gt;
-    &lt;Key&gt;demo.jpg&lt;/Key&gt;
-  &lt;/Object&gt;
-&lt;/Delete&gt;&quot;#
-                </span><span class="comment">// Cleanup space and new line
-                </span>.replace([<span class="string">&#39; &#39;</span>, <span class="string">&#39;\n&#39;</span>], <span class="string">&quot;&quot;</span>)
-        )
-    }
-
-    <span class="doccomment">/// This example is from https://www.alibabacloud.com/help/zh/object-storage-service/latest/deletemultipleobjects
-    </span><span class="attr">#[test]
-    </span><span class="kw">fn </span>test_deserialize_delete_objects_result() {
-        <span class="kw">let </span>bs = Bytes::from(
-            <span class="string">r#&quot;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;DeleteResult xmlns=&quot;http://doc.oss-cn-hangzhou.aliyuncs.com&quot;&gt;
-    &lt;Deleted&gt;
-       &lt;Key&gt;multipart.data&lt;/Key&gt;
-    &lt;/Deleted&gt;
-    &lt;Deleted&gt;
-       &lt;Key&gt;test.jpg&lt;/Key&gt;
-    &lt;/Deleted&gt;
-    &lt;Deleted&gt;
-       &lt;Key&gt;demo.jpg&lt;/Key&gt;
-    &lt;/Deleted&gt;
-&lt;/DeleteResult&gt;&quot;#</span>,
-        );
-
-        <span class="kw">let </span>out: DeleteObjectsResult =
-            quick_xml::de::from_reader(bs.reader()).expect(<span class="string">&quot;must success&quot;</span>);
-
-        <span class="macro">assert_eq!</span>(out.deleted.len(), <span class="number">3</span>);
-        <span class="macro">assert_eq!</span>(out.deleted[<span class="number">0</span>].key, <span class="string">&quot;multipart.data&quot;</span>);
-        <span class="macro">assert_eq!</span>(out.deleted[<span class="number">1</span>].key, <span class="string">&quot;test.jpg&quot;</span>);
-        <span class="macro">assert_eq!</span>(out.deleted[<span class="number">2</span>].key, <span class="string">&quot;demo.jpg&quot;</span>);
-    }
-}
-</code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.68.0 (2c8cc3432 2023-03-06)" data-search-js="search-98d53477a794af0b.js" data-settings-js="settings-c3c521c753752a1a.js" data-settings-css="settings-08ddfdda51b8ee2e.css" ></div></body></html>
+</code></pre></div></section></main></body></html>

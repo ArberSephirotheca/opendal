@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/raw/accessor.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>accessor.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-1f7d512b176f0f72.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-124a1ca42af929b6.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-93196c7a1c3542a8.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../../static.files/light-4743e13df3dfe8c4.css"><link rel="stylesheet" disabled href="../../../static.files/dark-0e1b889528bd466b.css"><link rel="stylesheet" disabled href="../../../static.files/ayu-65289d5d067c7c66.css"><script id="default-settings" ></script><script src="../../../static.files/storage-d43fa987303ecbbb.js"></script><script defer src="../../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-3367e395607fafc1.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../opendal/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-5ec35bf9ca753509.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/raw/accessor.rs`."><title>accessor.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0 (90c541806 2023-05-31)" data-search-js="search-e077946657036a58.js" data-settings-js="settings-298e1ea74db45b39.js" data-settings-css="settings-7bfb4c59cc6bc502.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../../static.files/source-script-905937fbbdc8e9ea.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-f61008743c98d196.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../opendal/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -558,7 +558,18 @@
 <a href="#558" id="558">558</a>
 <a href="#559" id="559">559</a>
 <a href="#560" id="560">560</a>
-</pre><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
+<a href="#561" id="561">561</a>
+<a href="#562" id="562">562</a>
+<a href="#563" id="563">563</a>
+<a href="#564" id="564">564</a>
+<a href="#565" id="565">565</a>
+<a href="#566" id="566">566</a>
+<a href="#567" id="567">567</a>
+<a href="#568" id="568">568</a>
+<a href="#569" id="569">569</a>
+<a href="#570" id="570">570</a>
+<a href="#571" id="571">571</a>
+</pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
@@ -579,14 +590,21 @@
 <span class="kw">use </span>std::sync::Arc;
 
 <span class="kw">use </span>async_trait::async_trait;
-<span class="kw">use </span>flagset::flags;
-<span class="kw">use </span>flagset::FlagSet;
 
-<span class="kw">use </span><span class="kw">crate</span>::ops::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Underlying trait of all backends for implementors.
+///
+/// The actual data access of storage service happens in Accessor layer.
+/// Every storage supported by OpenDAL must implement [`Accessor`] but not all
+/// methods of [`Accessor`] will be implemented according to how the storage service is.
+///
+/// For example, user can not modify the content from one HTTP file server directly.
+/// So [`Http`][crate::services::Http] implements and provides only read related actions.
+///
+/// [`Accessor`] gives default implementation for all methods which will raise [`ErrorKind::Unsupported`] error.
+/// And what action this [`Accessor`] supports will be pointed out in [`AccessorInfo`].
 ///
 /// # Note
 ///
@@ -613,16 +631,18 @@
     <span class="doccomment">/// BlockingReader is the associated reader that could return in
     /// `blocking_read` operation.
     </span><span class="kw">type </span>BlockingReader: oio::BlockingRead;
-    <span class="doccomment">/// Reader is the associated writer the could return in `write` operation.
+    <span class="doccomment">/// Writer is the associated writer the could return in `write` operation.
     </span><span class="kw">type </span>Writer: oio::Write;
     <span class="doccomment">/// BlockingWriter is the associated writer the could return in
     /// `blocking_write` operation.
     </span><span class="kw">type </span>BlockingWriter: oio::BlockingWrite;
-    <span class="doccomment">/// Pager is the associated page that return in `list` or `scan` operation.
+    <span class="doccomment">/// Pager is the associated page that return in `list` operation.
     </span><span class="kw">type </span>Pager: oio::Page;
     <span class="doccomment">/// BlockingPager is the associated pager that could return in
-    /// `blocking_list` or `scan` operation.
+    /// `blocking_list` operation.
     </span><span class="kw">type </span>BlockingPager: oio::BlockingPage;
+    <span class="doccomment">/// Appender is the associated appender that could return in `append` operation.
+    </span><span class="kw">type </span>Appender: oio::Append;
 
     <span class="doccomment">/// Invoke the `info` operation to get metadata of accessor.
     ///
@@ -635,19 +655,17 @@
     ///
     /// - scheme: declare the scheme of backend.
     /// - capabilities: declare the capabilities of current backend.
-    /// - hints: declare the hints of current backend
     </span><span class="kw">fn </span>info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; AccessorInfo;
 
     <span class="doccomment">/// Invoke the `create` operation on the specified path
     ///
-    /// Require [`AccessorCapability::Write`]
+    /// Require [`Capability::create_dir`]
     ///
     /// # Behavior
     ///
     /// - Input path MUST match with EntryMode, DON&#39;T NEED to check mode.
     /// - Create on existing dir SHOULD succeed.
-    /// - Create on existing file SHOULD overwrite and truncate.
-    </span><span class="kw">async fn </span>create(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpCreate) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreate&gt; {
+    </span><span class="kw">async fn </span>create_dir(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpCreateDir) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreateDir&gt; {
         <span class="kw">let </span>(<span class="kw">_</span>, <span class="kw">_</span>) = (path, args);
 
         <span class="prelude-val">Err</span>(Error::new(
@@ -659,7 +677,7 @@
     <span class="doccomment">/// Invoke the `read` operation on the specified path, returns a
     /// [`Reader`][crate::Reader] if operate successful.
     ///
-    /// Require [`AccessorCapability::Read`]
+    /// Require [`Capability::read`]
     ///
     /// # Behavior
     ///
@@ -677,7 +695,7 @@
     <span class="doccomment">/// Invoke the `write` operation on the specified path, returns a
     /// written size if operate successful.
     ///
-    /// Require [`AccessorCapability::Write`]
+    /// Require [`Capability::write`]
     ///
     /// # Behavior
     ///
@@ -691,9 +709,56 @@
         ))
     }
 
+    <span class="doccomment">/// Invoke the `append` operation on the specified path, returns a
+    /// appended size if operate successful.
+    ///
+    ///  Require [`Capability::append`]
+    ///
+    /// # Behavior
+    ///
+    /// - Input path MUST be file path, DON&#39;T NEED to check mode.
+    </span><span class="kw">async fn </span>append(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpAppend) -&gt; <span class="prelude-ty">Result</span>&lt;(RpAppend, <span class="self">Self</span>::Appender)&gt; {
+        <span class="kw">let </span>(<span class="kw">_</span>, <span class="kw">_</span>) = (path, args);
+
+        <span class="prelude-val">Err</span>(Error::new(
+            ErrorKind::Unsupported,
+            <span class="string">&quot;operation is not supported&quot;</span>,
+        ))
+    }
+
+    <span class="doccomment">/// Invoke the `copy` operation on the specified `from` path and `to` path.
+    ///
+    /// Require [Capability::copy]
+    ///
+    /// # Behaviour
+    ///
+    /// - `from` and `to` MUST be file path, DON&#39;T NEED to check mode.
+    /// - Copy on existing file SHOULD succeed.
+    /// - Copy on existing file SHOULD overwrite and truncate.
+    </span><span class="kw">async fn </span>copy(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, args: OpCopy) -&gt; <span class="prelude-ty">Result</span>&lt;RpCopy&gt; {
+        <span class="kw">let </span>(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) = (from, to, args);
+
+        <span class="prelude-val">Err</span>(Error::new(
+            ErrorKind::Unsupported,
+            <span class="string">&quot;operation is not supported&quot;</span>,
+        ))
+    }
+
+    <span class="doccomment">/// Invoke the `rename` operation on the specified `from` path and `to` path.
+    ///
+    /// Require [Capability::rename]
+    </span><span class="kw">async fn </span>rename(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, args: OpRename) -&gt; <span class="prelude-ty">Result</span>&lt;RpRename&gt; {
+        <span class="kw">let </span>(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) = (from, to, args);
+
+        <span class="prelude-val">Err</span>(Error::new(
+            ErrorKind::Unsupported,
+            <span class="string">&quot;operation is not supported&quot;</span>,
+        ))
+    }
+
     <span class="doccomment">/// Invoke the `stat` operation on the specified path.
     ///
-    /// Require [`AccessorCapability::Read`]
+    /// Require [`Capability::stat`]
     ///
     /// # Behavior
     ///
@@ -711,7 +776,7 @@
 
     <span class="doccomment">/// Invoke the `delete` operation on the specified path.
     ///
-    /// Require [`AccessorCapability::Write`]
+    /// Require [`Capability::delete`]
     ///
     /// # Behavior
     ///
@@ -728,7 +793,7 @@
 
     <span class="doccomment">/// Invoke the `list` operation on the specified path.
     ///
-    /// Require [`AccessorCapability::List`]
+    /// Require [`Capability::list`]
     ///
     /// # Behavior
     ///
@@ -743,26 +808,14 @@
         ))
     }
 
-    <span class="doccomment">/// Invoke the `scan` operation on the specified path.
-    ///
-    /// Require [`AccessorCapability::Scan`]
-    </span><span class="kw">async fn </span>scan(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpScan) -&gt; <span class="prelude-ty">Result</span>&lt;(RpScan, <span class="self">Self</span>::Pager)&gt; {
-        <span class="kw">let </span>(<span class="kw">_</span>, <span class="kw">_</span>) = (path, args);
-
-        <span class="prelude-val">Err</span>(Error::new(
-            ErrorKind::Unsupported,
-            <span class="string">&quot;operation is not supported&quot;</span>,
-        ))
-    }
-
     <span class="doccomment">/// Invoke the `presign` operation on the specified path.
     ///
-    /// Require [`AccessorCapability::Presign`]
+    /// Require [`Capability::presign`]
     ///
     /// # Behavior
     ///
     /// - This API is optional, return [`std::io::ErrorKind::Unsupported`] if not supported.
-    </span><span class="kw">fn </span>presign(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpPresign) -&gt; <span class="prelude-ty">Result</span>&lt;RpPresign&gt; {
+    </span><span class="kw">async fn </span>presign(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpPresign) -&gt; <span class="prelude-ty">Result</span>&lt;RpPresign&gt; {
         <span class="kw">let </span>(<span class="kw">_</span>, <span class="kw">_</span>) = (path, args);
 
         <span class="prelude-val">Err</span>(Error::new(
@@ -772,6 +825,8 @@
     }
 
     <span class="doccomment">/// Invoke the `batch` operations.
+    ///
+    /// Require [`Capability::batch`]
     </span><span class="kw">async fn </span>batch(<span class="kw-2">&amp;</span><span class="self">self</span>, args: OpBatch) -&gt; <span class="prelude-ty">Result</span>&lt;RpBatch&gt; {
         <span class="kw">let _ </span>= args;
 
@@ -783,10 +838,10 @@
 
     <span class="doccomment">/// Invoke the `blocking_create` operation on the specified path.
     ///
-    /// This operation is the blocking version of [`Accessor::create`]
+    /// This operation is the blocking version of [`Accessor::create_dir`]
     ///
-    /// Require [`AccessorCapability::Write`] and [`AccessorCapability::Blocking`]
-    </span><span class="kw">fn </span>blocking_create(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpCreate) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreate&gt; {
+    /// Require [`Capability::create_dir`] and [`Capability::blocking`]
+    </span><span class="kw">fn </span>blocking_create_dir(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpCreateDir) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreateDir&gt; {
         <span class="kw">let </span>(<span class="kw">_</span>, <span class="kw">_</span>) = (path, args);
 
         <span class="prelude-val">Err</span>(Error::new(
@@ -799,7 +854,7 @@
     ///
     /// This operation is the blocking version of [`Accessor::read`]
     ///
-    /// Require [`AccessorCapability::Read`] and [`AccessorCapability::Blocking`]
+    /// Require [`Capability::read`] and [`Capability::blocking`]
     </span><span class="kw">fn </span>blocking_read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::BlockingReader)&gt; {
         <span class="kw">let </span>(<span class="kw">_</span>, <span class="kw">_</span>) = (path, args);
 
@@ -813,9 +868,37 @@
     ///
     /// This operation is the blocking version of [`Accessor::write`]
     ///
-    /// Require [`AccessorCapability::Write`] and [`AccessorCapability::Blocking`]
+    /// Require [`Capability::write`] and [`Capability::blocking`]
     </span><span class="kw">fn </span>blocking_write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::BlockingWriter)&gt; {
         <span class="kw">let </span>(<span class="kw">_</span>, <span class="kw">_</span>) = (path, args);
+
+        <span class="prelude-val">Err</span>(Error::new(
+            ErrorKind::Unsupported,
+            <span class="string">&quot;operation is not supported&quot;</span>,
+        ))
+    }
+
+    <span class="doccomment">/// Invoke the `blocking_copy` operation on the specified `from` path and `to` path.
+    ///
+    /// This operation is the blocking version of [`Accessor::copy`]
+    ///
+    /// Require [`Capability::copy`] and [`Capability::blocking`]
+    </span><span class="kw">fn </span>blocking_copy(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, args: OpCopy) -&gt; <span class="prelude-ty">Result</span>&lt;RpCopy&gt; {
+        <span class="kw">let </span>(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) = (from, to, args);
+
+        <span class="prelude-val">Err</span>(Error::new(
+            ErrorKind::Unsupported,
+            <span class="string">&quot;operation is not supported&quot;</span>,
+        ))
+    }
+
+    <span class="doccomment">/// Invoke the `blocking_rename` operation on the specified `from` path and `to` path.
+    ///
+    /// This operation is the blocking version of [`Accessor::rename`]
+    ///
+    /// Require [`Capability::rename`] and [`Capability::blocking`]
+    </span><span class="kw">fn </span>blocking_rename(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, args: OpRename) -&gt; <span class="prelude-ty">Result</span>&lt;RpRename&gt; {
+        <span class="kw">let </span>(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) = (from, to, args);
 
         <span class="prelude-val">Err</span>(Error::new(
             ErrorKind::Unsupported,
@@ -827,7 +910,7 @@
     ///
     /// This operation is the blocking version of [`Accessor::stat`]
     ///
-    /// Require [`AccessorCapability::Read`] and [`AccessorCapability::Blocking`]
+    /// Require [`Capability::stat`] and [`Capability::blocking`]
     </span><span class="kw">fn </span>blocking_stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
         <span class="kw">let </span>(<span class="kw">_</span>, <span class="kw">_</span>) = (path, args);
 
@@ -841,7 +924,7 @@
     ///
     /// This operation is the blocking version of [`Accessor::delete`]
     ///
-    /// Require [`AccessorCapability::Write`] and [`AccessorCapability::Blocking`]
+    /// Require [`Capability::write`] and [`Capability::blocking`]
     </span><span class="kw">fn </span>blocking_delete(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpDelete) -&gt; <span class="prelude-ty">Result</span>&lt;RpDelete&gt; {
         <span class="kw">let </span>(<span class="kw">_</span>, <span class="kw">_</span>) = (path, args);
 
@@ -855,24 +938,12 @@
     ///
     /// This operation is the blocking version of [`Accessor::list`]
     ///
-    /// Require [`AccessorCapability::List`] and [`AccessorCapability::Blocking`]
+    /// Require [`Capability::list`] and [`Capability::blocking`]
     ///
     /// # Behavior
     ///
     /// - List non-exist dir should return Empty.
     </span><span class="kw">fn </span>blocking_list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;(RpList, <span class="self">Self</span>::BlockingPager)&gt; {
-        <span class="kw">let </span>(<span class="kw">_</span>, <span class="kw">_</span>) = (path, args);
-
-        <span class="prelude-val">Err</span>(Error::new(
-            ErrorKind::Unsupported,
-            <span class="string">&quot;operation is not supported&quot;</span>,
-        ))
-    }
-
-    <span class="doccomment">/// Invoke the `blocking_scan` operation on the specified path.
-    ///
-    /// Require [`AccessorCapability::Scan`] and [`AccessorCapability::Blocking`]
-    </span><span class="kw">fn </span>blocking_scan(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpScan) -&gt; <span class="prelude-ty">Result</span>&lt;(RpScan, <span class="self">Self</span>::BlockingPager)&gt; {
         <span class="kw">let </span>(<span class="kw">_</span>, <span class="kw">_</span>) = (path, args);
 
         <span class="prelude-val">Err</span>(Error::new(
@@ -889,6 +960,7 @@
     <span class="kw">type </span>BlockingReader = ();
     <span class="kw">type </span>Writer = ();
     <span class="kw">type </span>BlockingWriter = ();
+    <span class="kw">type </span>Appender = ();
     <span class="kw">type </span>Pager = ();
     <span class="kw">type </span>BlockingPager = ();
 
@@ -897,9 +969,7 @@
             scheme: Scheme::Custom(<span class="string">&quot;dummy&quot;</span>),
             root: <span class="string">&quot;&quot;</span>.to_string(),
             name: <span class="string">&quot;dummy&quot;</span>.to_string(),
-            max_batch_operations: <span class="prelude-val">None</span>,
-            capabilities: <span class="prelude-val">None</span>.into(),
-            hints: <span class="prelude-val">None</span>.into(),
+            capability: Capability::default(),
         }
     }
 }
@@ -912,6 +982,7 @@
     <span class="kw">type </span>BlockingReader = T::BlockingReader;
     <span class="kw">type </span>Writer = T::Writer;
     <span class="kw">type </span>BlockingWriter = T::BlockingWriter;
+    <span class="kw">type </span>Appender = T::Appender;
     <span class="kw">type </span>Pager = T::Pager;
     <span class="kw">type </span>BlockingPager = T::BlockingPager;
 
@@ -919,8 +990,8 @@
         <span class="self">self</span>.as_ref().info()
     }
 
-    <span class="kw">async fn </span>create(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpCreate) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreate&gt; {
-        <span class="self">self</span>.as_ref().create(path, args).<span class="kw">await
+    <span class="kw">async fn </span>create_dir(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpCreateDir) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreateDir&gt; {
+        <span class="self">self</span>.as_ref().create_dir(path, args).<span class="kw">await
     </span>}
 
     <span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
@@ -929,6 +1000,19 @@
     <span class="kw">async fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::Writer)&gt; {
         <span class="self">self</span>.as_ref().write(path, args).<span class="kw">await
     </span>}
+
+    <span class="kw">async fn </span>append(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpAppend) -&gt; <span class="prelude-ty">Result</span>&lt;(RpAppend, <span class="self">Self</span>::Appender)&gt; {
+        <span class="self">self</span>.as_ref().append(path, args).<span class="kw">await
+    </span>}
+
+    <span class="kw">async fn </span>copy(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, args: OpCopy) -&gt; <span class="prelude-ty">Result</span>&lt;RpCopy&gt; {
+        <span class="self">self</span>.as_ref().copy(from, to, args).<span class="kw">await
+    </span>}
+
+    <span class="kw">async fn </span>rename(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, args: OpRename) -&gt; <span class="prelude-ty">Result</span>&lt;RpRename&gt; {
+        <span class="self">self</span>.as_ref().rename(from, to, args).<span class="kw">await
+    </span>}
+
     <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
         <span class="self">self</span>.as_ref().stat(path, args).<span class="kw">await
     </span>}
@@ -938,20 +1022,17 @@
     <span class="kw">async fn </span>list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;(RpList, <span class="self">Self</span>::Pager)&gt; {
         <span class="self">self</span>.as_ref().list(path, args).<span class="kw">await
     </span>}
-    <span class="kw">async fn </span>scan(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpScan) -&gt; <span class="prelude-ty">Result</span>&lt;(RpScan, <span class="self">Self</span>::Pager)&gt; {
-        <span class="self">self</span>.as_ref().scan(path, args).<span class="kw">await
-    </span>}
 
     <span class="kw">async fn </span>batch(<span class="kw-2">&amp;</span><span class="self">self</span>, args: OpBatch) -&gt; <span class="prelude-ty">Result</span>&lt;RpBatch&gt; {
         <span class="self">self</span>.as_ref().batch(args).<span class="kw">await
     </span>}
 
-    <span class="kw">fn </span>presign(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpPresign) -&gt; <span class="prelude-ty">Result</span>&lt;RpPresign&gt; {
-        <span class="self">self</span>.as_ref().presign(path, args)
-    }
+    <span class="kw">async fn </span>presign(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpPresign) -&gt; <span class="prelude-ty">Result</span>&lt;RpPresign&gt; {
+        <span class="self">self</span>.as_ref().presign(path, args).<span class="kw">await
+    </span>}
 
-    <span class="kw">fn </span>blocking_create(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpCreate) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreate&gt; {
-        <span class="self">self</span>.as_ref().blocking_create(path, args)
+    <span class="kw">fn </span>blocking_create_dir(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpCreateDir) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreateDir&gt; {
+        <span class="self">self</span>.as_ref().blocking_create_dir(path, args)
     }
     <span class="kw">fn </span>blocking_read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::BlockingReader)&gt; {
         <span class="self">self</span>.as_ref().blocking_read(path, args)
@@ -959,6 +1040,15 @@
     <span class="kw">fn </span>blocking_write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::BlockingWriter)&gt; {
         <span class="self">self</span>.as_ref().blocking_write(path, args)
     }
+
+    <span class="kw">fn </span>blocking_copy(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, args: OpCopy) -&gt; <span class="prelude-ty">Result</span>&lt;RpCopy&gt; {
+        <span class="self">self</span>.as_ref().blocking_copy(from, to, args)
+    }
+
+    <span class="kw">fn </span>blocking_rename(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, args: OpRename) -&gt; <span class="prelude-ty">Result</span>&lt;RpRename&gt; {
+        <span class="self">self</span>.as_ref().blocking_rename(from, to, args)
+    }
+
     <span class="kw">fn </span>blocking_stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
         <span class="self">self</span>.as_ref().blocking_stat(path, args)
     }
@@ -968,19 +1058,16 @@
     <span class="kw">fn </span>blocking_list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;(RpList, <span class="self">Self</span>::BlockingPager)&gt; {
         <span class="self">self</span>.as_ref().blocking_list(path, args)
     }
-
-    <span class="kw">fn </span>blocking_scan(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpScan) -&gt; <span class="prelude-ty">Result</span>&lt;(RpScan, <span class="self">Self</span>::BlockingPager)&gt; {
-        <span class="self">self</span>.as_ref().blocking_scan(path, args)
-    }
 }
 
-<span class="doccomment">/// FusedAccessor is the type erased accessor with `Box&lt;dyn Read&gt;`.
+<span class="doccomment">/// FusedAccessor is the type erased accessor with `Arc&lt;dyn Accessor&gt;`.
 </span><span class="kw">pub type </span>FusedAccessor = Arc&lt;
     <span class="kw">dyn </span>Accessor&lt;
         Reader = oio::Reader,
         BlockingReader = oio::BlockingReader,
         Writer = oio::Writer,
         BlockingWriter = oio::BlockingWriter,
+        Appender = oio::Appender,
         Pager = oio::Pager,
         BlockingPager = oio::BlockingPager,
     &gt;,
@@ -992,11 +1079,8 @@
     scheme: Scheme,
     root: String,
     name: String,
-    <span class="doccomment">/// limit of batch operation
-    /// only meaningful when accessor supports batch operation
-    </span>max_batch_operations: <span class="prelude-ty">Option</span>&lt;usize&gt;,
-    capabilities: FlagSet&lt;AccessorCapability&gt;,
-    hints: FlagSet&lt;AccessorHint&gt;,
+
+    capability: Capability,
 }
 
 <span class="kw">impl </span>AccessorInfo {
@@ -1040,83 +1124,20 @@
         <span class="self">self
     </span>}
 
-    <span class="doccomment">/// backend&#39;s number limitation of operations in a single batch.
-    ///
-    /// # Note
-    /// - Got Some(x): limitation is x
-    /// - Got None: no limitation
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>max_batch_operations(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt; {
-        <span class="self">self</span>.max_batch_operations
+    <span class="doccomment">/// Get backend&#39;s capabilities.
+    </span><span class="kw">pub fn </span>capability(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Capability {
+        <span class="self">self</span>.capability
     }
 
-    <span class="doccomment">/// Set batch size limit for backend.
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>set_max_batch_operations(<span class="kw-2">&amp;mut </span><span class="self">self</span>, limit: usize) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.max_batch_operations = <span class="prelude-val">Some</span>(limit);
-        <span class="self">self
-    </span>}
-
     <span class="doccomment">/// Get backend&#39;s capabilities.
-    </span><span class="kw">pub fn </span>capabilities(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; FlagSet&lt;AccessorCapability&gt; {
-        <span class="self">self</span>.capabilities
+    </span><span class="kw">pub fn </span>capability_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>Capability {
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.capability
     }
 
     <span class="doccomment">/// Set capabilities for backend.
-    </span><span class="kw">pub fn </span>set_capabilities(
-        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        capabilities: <span class="kw">impl </span>Into&lt;FlagSet&lt;AccessorCapability&gt;&gt;,
-    ) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.capabilities = capabilities.into();
-        <span class="self">self
-    </span>}
-
-    <span class="doccomment">/// Get backend&#39;s hints.
-    </span><span class="kw">pub fn </span>hints(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; FlagSet&lt;AccessorHint&gt; {
-        <span class="self">self</span>.hints
-    }
-
-    <span class="doccomment">/// Set hints for backend.
-    </span><span class="kw">pub fn </span>set_hints(<span class="kw-2">&amp;mut </span><span class="self">self</span>, hints: <span class="kw">impl </span>Into&lt;FlagSet&lt;AccessorHint&gt;&gt;) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.hints = hints.into();
+    </span><span class="kw">pub fn </span>set_capability(<span class="kw-2">&amp;mut </span><span class="self">self</span>, capability: Capability) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.capability = capability;
         <span class="self">self
     </span>}
 }
-
-<span class="macro">flags! </span>{
-    <span class="doccomment">/// AccessorCapability describes accessor&#39;s advanced capability.
-    </span><span class="kw">pub enum </span>AccessorCapability: u32 {
-        <span class="doccomment">/// Add this capability if service supports `read` and `stat`
-        </span>Read,
-        <span class="doccomment">/// Add this capability if service supports `write` and `delete`
-        </span>Write,
-        <span class="doccomment">/// Add this capability if service supports `list`
-        </span>List,
-        <span class="doccomment">/// Add this capability if service supports `scan`
-        </span>Scan,
-        <span class="doccomment">/// Add this capability if service supports `presign`
-        </span>Presign,
-        <span class="doccomment">/// Add this capability if service supports `blocking`
-        </span>Blocking,
-        <span class="doccomment">/// Add this capability if service supports `batch`
-        </span>Batch,
-    }
-}
-
-<span class="macro">flags! </span>{
-    <span class="doccomment">/// AccessorHint describes accessor&#39;s hint.
-    ///
-    /// Hint means developers can do optimize for this accessor.
-    ///
-    /// All hints are internal used only and will not be exposed to users.
-    </span><span class="kw">pub enum </span>AccessorHint: u64 {
-        <span class="doccomment">/// Read seekable means the underlying read is seekable.
-        ///
-        /// We can reuse the same reader instead of always creating new one.
-        </span>ReadSeekable,
-        <span class="doccomment">/// Read streamable means the underlying read is streamable.
-        ///
-        /// It&#39;s better to use stream to reading data.
-        </span>ReadStreamable,
-    }
-}
-</code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.68.0 (2c8cc3432 2023-03-06)" data-search-js="search-98d53477a794af0b.js" data-settings-js="settings-c3c521c753752a1a.js" data-settings-css="settings-08ddfdda51b8ee2e.css" ></div></body></html>
+</code></pre></div></section></main></body></html>
